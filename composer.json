@@ -1,0 +1,30 @@
+{
+    "name": "ankane/logstop",
+    "description": "Keep personal data out of your logs",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/ankane/logstop-php/issues",
+        "source": "https://github.com/ankane/logstop-php"
+    },
+    "authors": [
+        {
+            "name": "Andrew Kane",
+            "email": "andrew@ankane.org"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Logstop\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">= 8.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9",
+        "monolog/monolog": "^3"
+    },
+    "scripts": {
+        "test": "phpunit tests"
+    }
+}

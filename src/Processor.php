@@ -1,0 +1,53 @@
+<?php
+
+namespace Logstop;
+
+use Monolog\Processor\ProcessorInterface;
+
+class Processor implements ProcessorInterface
+{
+    private const FILTERED_STR = '[FILTERED]';
+    private const FILTERED_URL_STR = '\1[FILTERED]\2';
+
+    private const CREDIT_CARD_REGEX = '/\b[3456]\d{15}\b/';
+    private const CREDIT_CARD_REGEX_DELIMITERS = '/\b[3456]\d{3}[\s+-]\d{4}[\s+-]\d{4}[\s+-]\d{4}\b/';
+    private const EMAIL_REGEX = '/\b[\w]([\w+.-]|%2B)+(?:@|%40)[a-z\d-]+(?:\.[a-z\d-]+)*\.[a-z]+\b/i';
+    private const IP_REGEX = '/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/';
+    private const PHONE_REGEX = '/\b(?:\+\d{1,2}\s)?\(?\d{3}\)?[\s+.-]\d{3}[\s+.-]\d{4}\b/';
+    private const SSN_REGEX = '/\b\d{3}[\s+-]\d{2}[\s+-]\d{4}\b/';
+    private const URL_PASSWORD_REGEX = '/((?:\/\/|%2F%2F)\S+(?::|%3A))\S+(@|%40)/';
+
+    public function __construct($ip = false)
+    {
+        $this->ip = $ip;
+    }
+
+    public function __invoke($record)
+    {
+        $message = $this->scrub($record->message);
+
+        $context = $record->context;
+        foreach ($context as $key => $value) {
+            $context[$key] = $this->scrub($value);
+        }
+
+        return $record->with(message: $message, context: $context);
+    }
+
+    private function scrub($message)
+    {
+        // order filters are applied is important
+        $message = preg_replace(self::URL_PASSWORD_REGEX, self::FILTERED_URL_STR, $message);
+        $message = preg_replace(self::EMAIL_REGEX, self::FILTERED_STR, $message);
+        $message = preg_replace(self::CREDIT_CARD_REGEX, self::FILTERED_STR, $message);
+        $message = preg_replace(self::CREDIT_CARD_REGEX_DELIMITERS, self::FILTERED_STR, $message);
+        $message = preg_replace(self::PHONE_REGEX, self::FILTERED_STR, $message);
+        $message = preg_replace(self::SSN_REGEX, self::FILTERED_STR, $message);
+
+        if ($this->ip) {
+            $message = preg_replace(self::IP_REGEX, self::FILTERED_STR, $message);
+        }
+
+        return $message;
+    }
+}
