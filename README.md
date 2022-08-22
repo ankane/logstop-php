@@ -34,7 +34,7 @@ Run:
 composer require ankane/logstop
 ```
 
-And add it to your logger:
+And add it to your [Monolog](https://github.com/Seldaek/monolog) logger:
 
 ```php
 $logger->pushProcessor(new Logstop\Processor());
