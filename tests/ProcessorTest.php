@@ -22,6 +22,7 @@ final class ProcessorTest extends TestCase
         $this->assertFiltered('test-test@example.org');
         $this->assertFiltered('test@example.us');
         $this->assertFiltered('test@example.science');
+        $this->assertNotFiltered('test@example.org', email: false);
     }
 
     public function testPhone()
@@ -30,6 +31,7 @@ final class ProcessorTest extends TestCase
         $this->assertFiltered('555 555 5555');
         $this->assertFiltered('555.555.5555');
         $this->assertNotFiltered('5555555555');
+        $this->assertNotFiltered('555-555-5555', phone: false);
 
         // use 7 digit min
         // https://stackoverflow.com/questions/14894899/what-is-the-minimum-length-of-a-valid-international-phone-number
@@ -47,6 +49,7 @@ final class ProcessorTest extends TestCase
         $this->assertFiltered('4242424242424242');
         $this->assertNotFiltered('0242424242424242');
         $this->assertNotFiltered('55555555-5555-5555-5555-555555555555'); // uuid
+        $this->assertNotFiltered('4242-4242-4242-4242', creditCard: false);
     }
 
     public function testSsn()
@@ -54,6 +57,7 @@ final class ProcessorTest extends TestCase
         $this->assertFiltered('123-45-6789');
         $this->assertFiltered('123 45 6789');
         $this->assertNotFiltered('123456789');
+        $this->assertNotFiltered('123-45-6789', ssn: false);
     }
 
     public function testIp()
@@ -127,11 +131,11 @@ final class ProcessorTest extends TestCase
         $this->assertStringNotContainsString('test@example.org', $contents);
     }
 
-    private function assertFiltered($message, $expected = '[FILTERED]', $ip = false, $mac = false)
+    private function assertFiltered($message, $expected = '[FILTERED]', ...$args)
     {
         $stream = fopen('php://memory', 'r+');
         $logger = $this->createLogger($stream, new LineFormatter('%message%'));
-        $logger->pushProcessor(new Logstop\Processor(ip: $ip, mac: $mac));
+        $logger->pushProcessor(new Logstop\Processor(...$args));
 
         $logger->info("begin $message end");
         $this->assertEquals("begin $expected end", $this->readStream($stream));
@@ -142,9 +146,9 @@ final class ProcessorTest extends TestCase
         $this->assertEquals("begin $expected end", urldecode($this->readStream($stream)));
     }
 
-    private function assertNotFiltered($message, $expected = '[FILTERED]', $ip = false, $mac = false)
+    private function assertNotFiltered($message, $expected = '[FILTERED]', ...$args)
     {
-        $this->assertFiltered($message, expected: $message, ip: $ip, mac: $mac);
+        $this->assertFiltered($message, ...$args, expected: $message);
     }
 
     private function createLogger($stream, $formatter = null)
