@@ -14,6 +14,7 @@ class Processor implements ProcessorInterface
     private const EMAIL_REGEX = '/\b[\w]([\w+.-]|%2B)+(?:@|%40)[a-z\d-]+(?:\.[a-z\d-]+)*\.[a-z]+\b/i';
     private const IP_REGEX = '/\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/';
     private const PHONE_REGEX = '/\b(?:\+\d{1,2}\s)?\(?\d{3}\)?[\s+.-]\d{3}[\s+.-]\d{4}\b/';
+    private const E164_PHONE_REGEX = '/(?:\+|%2B)[1-9]\d{6,14}\b/';
     private const SSN_REGEX = '/\b\d{3}[\s+-]\d{2}[\s+-]\d{4}\b/';
     private const URL_PASSWORD_REGEX = '/((?:\/\/|%2F%2F)\S+(?::|%3A))\S+(@|%40)/';
     private const MAC_REGEX = '/\b[0-9a-f]{2}(?:(?::|%3A)[0-9a-f]{2}){5}\b/i';
@@ -43,6 +44,7 @@ class Processor implements ProcessorInterface
         $message = preg_replace(self::EMAIL_REGEX, self::FILTERED_STR, $message);
         $message = preg_replace(self::CREDIT_CARD_REGEX, self::FILTERED_STR, $message);
         $message = preg_replace(self::CREDIT_CARD_REGEX_DELIMITERS, self::FILTERED_STR, $message);
+        $message = preg_replace(self::E164_PHONE_REGEX, self::FILTERED_STR, $message);
         $message = preg_replace(self::PHONE_REGEX, self::FILTERED_STR, $message);
         $message = preg_replace(self::SSN_REGEX, self::FILTERED_STR, $message);
 

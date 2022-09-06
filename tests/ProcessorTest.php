@@ -30,6 +30,14 @@ final class ProcessorTest extends TestCase
         $this->assertFiltered('555 555 5555');
         $this->assertFiltered('555.555.5555');
         $this->assertNotFiltered('5555555555');
+
+        // use 7 digit min
+        // https://stackoverflow.com/questions/14894899/what-is-the-minimum-length-of-a-valid-international-phone-number
+        $this->assertNotFiltered('+123456');
+        $this->assertFiltered('+1234567');
+        $this->assertFiltered('+15555555555');
+        $this->assertFiltered('+123456789012345');
+        $this->assertNotFiltered('+1234567890123456');
     }
 
     public function testCreditCard()
