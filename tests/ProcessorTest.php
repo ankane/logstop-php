@@ -70,6 +70,7 @@ final class ProcessorTest extends TestCase
     {
         $this->assertFiltered('https://user:pass@host', expected: 'https://user:[FILTERED]@host');
         $this->assertFiltered('https://user:pass@host.com', expected: 'https://user:[FILTERED]@host.com');
+        $this->assertNotFiltered('https://user:pass@host', urlPassword: false);
     }
 
     public function testMac()
