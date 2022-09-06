@@ -16,10 +16,12 @@ class Processor implements ProcessorInterface
     private const PHONE_REGEX = '/\b(?:\+\d{1,2}\s)?\(?\d{3}\)?[\s+.-]\d{3}[\s+.-]\d{4}\b/';
     private const SSN_REGEX = '/\b\d{3}[\s+-]\d{2}[\s+-]\d{4}\b/';
     private const URL_PASSWORD_REGEX = '/((?:\/\/|%2F%2F)\S+(?::|%3A))\S+(@|%40)/';
+    private const MAC_REGEX = '/\b[0-9a-f]{2}(?:(?::|%3A)[0-9a-f]{2}){5}\b/i';
 
-    public function __construct($ip = false)
+    public function __construct($ip = false, $mac = false)
     {
         $this->ip = $ip;
+        $this->mac = $mac;
     }
 
     public function __invoke($record)
@@ -46,6 +48,10 @@ class Processor implements ProcessorInterface
 
         if ($this->ip) {
             $message = preg_replace(self::IP_REGEX, self::FILTERED_STR, $message);
+        }
+
+        if ($this->mac) {
+            $message = preg_replace(self::MAC_REGEX, self::FILTERED_STR, $message);
         }
 
         return $message;

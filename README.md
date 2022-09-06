@@ -48,6 +48,12 @@ To scrub IP addresses (IPv4), use:
 new Logstop\Processor(ip: true);
 ```
 
+To scrub MAC addresses, use: [unreleased]
+
+```php
+new Logstop\Processor(mac: true);
+```
+
 ## Notes
 
 - To scrub existing log files, check out [scrubadub](https://github.com/datascopeanalytics/scrubadub)

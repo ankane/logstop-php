@@ -60,6 +60,14 @@ final class ProcessorTest extends TestCase
         $this->assertFiltered('https://user:pass@host.com', expected: 'https://user:[FILTERED]@host.com');
     }
 
+    public function testMac()
+    {
+        $this->assertNotFiltered('ff:ff:ff:ff:ff:ff');
+        $this->assertFiltered('ff:ff:ff:ff:ff:ff', mac: true);
+        $this->assertFiltered('a1:b2:c3:d4:e5:f6', mac: true);
+        $this->assertFiltered('A1:B2:C3:D4:E5:F6', mac: true);
+    }
+
     public function testMultiple()
     {
         $this->assertFiltered('test@example.org test2@example.org 123-45-6789', expected: '[FILTERED] [FILTERED] [FILTERED]');
@@ -111,11 +119,11 @@ final class ProcessorTest extends TestCase
         $this->assertStringNotContainsString('test@example.org', $contents);
     }
 
-    private function assertFiltered($message, $expected = '[FILTERED]', $ip = false)
+    private function assertFiltered($message, $expected = '[FILTERED]', $ip = false, $mac = false)
     {
         $stream = fopen('php://memory', 'r+');
         $logger = $this->createLogger($stream, new LineFormatter('%message%'));
-        $logger->pushProcessor(new Logstop\Processor(ip: $ip));
+        $logger->pushProcessor(new Logstop\Processor(ip: $ip, mac: $mac));
 
         $logger->info("begin $message end");
         $this->assertEquals("begin $expected end", $this->readStream($stream));
@@ -126,9 +134,9 @@ final class ProcessorTest extends TestCase
         $this->assertEquals("begin $expected end", urldecode($this->readStream($stream)));
     }
 
-    private function assertNotFiltered($message, $expected = '[FILTERED]', $ip = false)
+    private function assertNotFiltered($message, $expected = '[FILTERED]', $ip = false, $mac = false)
     {
-        $this->assertFiltered($message, expected: $message, ip: $ip);
+        $this->assertFiltered($message, expected: $message, ip: $ip, mac: $mac);
     }
 
     private function createLogger($stream, $formatter = null)
