@@ -58,11 +58,11 @@ Disable default rules with:
 
 ```php
 new Logstop\Processor(
-  email: false,
-  phone: false,
-  creditCard: false,
-  ssn: false,
-  urlPassword: false
+    email: false,
+    phone: false,
+    creditCard: false,
+    ssn: false,
+    urlPassword: false
 );
 ```
 
