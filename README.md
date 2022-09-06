@@ -48,10 +48,22 @@ To scrub IP addresses (IPv4), use:
 new Logstop\Processor(ip: true);
 ```
 
-To scrub MAC addresses, use: [unreleased]
+To scrub MAC addresses, use:
 
 ```php
 new Logstop\Processor(mac: true);
+```
+
+Disable default rules with:
+
+```php
+new Logstop\Processor(
+  email: false,
+  phone: false,
+  creditCard: false,
+  ssn: false,
+  urlPassword: false
+);
 ```
 
 ## Notes
