@@ -1,3 +1,7 @@
+## 0.1.2 (unreleased)
+
+- Fixed warnings with PHP 8.2
+
 ## 0.1.1 (2022-09-06)
 
 - Added support for international phone numbers
