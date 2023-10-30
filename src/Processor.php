@@ -57,6 +57,7 @@ class Processor implements ProcessorInterface
             foreach ($value as $key => $subValue) {
                 $value[$key] = $this->scrub($subValue);
             }
+
             return $value;
         }
 
