@@ -110,12 +110,9 @@ final class ProcessorTest extends TestCase
         $logger = $this->createLogger($stream);
         $logger->pushProcessor(new Logstop\Processor());
 
-        $logger->info(
-            'Hi',
-            ['params' => ['user' => ['email' => 'test@example.org', 'name' => 'Alice']]]
-        );
+        $logger->info('Email Sent', ['params' => ['user' => ['email' => 'test@example.org', 'name' => 'Alice']]]);
         $contents = $this->readStream($stream);
-        $this->assertStringContainsString('"email":"[FILTERED]"', $contents);
+        $this->assertStringContainsString('"user":{"email":"[FILTERED]"', $contents);
         $this->assertStringNotContainsString('test@example.org', $contents);
     }
 
