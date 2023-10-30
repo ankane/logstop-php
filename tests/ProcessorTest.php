@@ -104,15 +104,18 @@ final class ProcessorTest extends TestCase
         $this->assertStringNotContainsString('test@example.org', $contents);
     }
 
-    public function testContextWithMultiDemensionalArray()
+    public function testContextWithMultiDimensionalArray()
     {
         $stream = fopen('php://memory', 'r+');
         $logger = $this->createLogger($stream);
         $logger->pushProcessor(new Logstop\Processor());
 
-        $logger->info('Hi', ['params' => ['userEmail' => 'test@example.org', 'name' => 'Alice']]);
+        $logger->info(
+            'Hi',
+            ['params' => ['user' => ['email' => 'test@example.org', 'name' => 'Alice']]]
+        );
         $contents = $this->readStream($stream);
-        $this->assertStringContainsString('"userEmail":"[FILTERED]"', $contents);
+        $this->assertStringContainsString('"email":"[FILTERED]"', $contents);
         $this->assertStringNotContainsString('test@example.org', $contents);
     }
 
