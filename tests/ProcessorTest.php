@@ -144,6 +144,20 @@ final class ProcessorTest extends TestCase
         $this->assertStringNotContainsString('test@example.org', $contents);
     }
 
+    public function testMaxDepthReachedThrowsException()
+    {
+        $stream = fopen('php://memory', 'r+');
+        $logger = $this->createLogger($stream);
+        $logger->pushProcessor(new Logstop\Processor(maxDepth: 2));
+
+        $this->expectException(\RuntimeException::class);
+
+        $logger->info(
+            'Test',
+            ['params' => ['sql'=> ['user' => ['email' => 'test@example.org', 'name' => 'Alice']]]]
+        );
+    }
+
     private function assertFiltered($message, $expected = '[FILTERED]', ...$args)
     {
         $stream = fopen('php://memory', 'r+');

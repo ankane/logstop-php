@@ -27,9 +27,18 @@ class Processor implements ProcessorInterface
     public $creditCard;
     public $phone;
     public $ssn;
+    private int $maxDepth;
 
-    public function __construct($ip = false, $mac = false, $urlPassword = true, $email = true, $creditCard = true, $phone = true, $ssn = true)
-    {
+    public function __construct(
+        $ip = false,
+        $mac = false,
+        $urlPassword = true,
+        $email = true,
+        $creditCard = true,
+        $phone = true,
+        $ssn = true,
+        int $maxDepth = 50
+    ) {
         $this->ip = $ip;
         $this->mac = $mac;
         $this->urlPassword = $urlPassword;
@@ -37,6 +46,7 @@ class Processor implements ProcessorInterface
         $this->creditCard = $creditCard;
         $this->phone = $phone;
         $this->ssn = $ssn;
+        $this->maxDepth = $maxDepth;
     }
 
     public function __invoke($record)
@@ -51,11 +61,15 @@ class Processor implements ProcessorInterface
         return $record->with(message: $message, context: $context);
     }
 
-    private function scrub($message)
+    private function scrub($message, $recursionDepth = 0)
     {
+        if ($recursionDepth > $this->maxDepth) {
+            throw new \RuntimeException('Max Logstop scrub recursion depth reached');
+        }
+
         if (is_array($message)) {
             foreach ($message as $key => $subValue) {
-                $message[$key] = $this->scrub($subValue);
+                $message[$key] = $this->scrub($subValue, $recursionDepth + 1);
             }
 
             return $message;
