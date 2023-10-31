@@ -51,47 +51,47 @@ class Processor implements ProcessorInterface
         return $record->with(message: $message, context: $context);
     }
 
-    private function scrub($value)
+    private function scrub($message)
     {
-        if (is_array($value)) {
-            foreach ($value as $key => $subValue) {
-                $value[$key] = $this->scrub($subValue);
+        if (is_array($message)) {
+            foreach ($message as $key => $subValue) {
+                $message[$key] = $this->scrub($subValue);
             }
 
-            return $value;
+            return $message;
         }
 
         // order filters are applied is important
         if ($this->urlPassword) {
-            $value = preg_replace(self::URL_PASSWORD_REGEX, self::FILTERED_URL_STR, $value);
+            $message = preg_replace(self::URL_PASSWORD_REGEX, self::FILTERED_URL_STR, $message);
         }
 
         if ($this->email) {
-            $value = preg_replace(self::EMAIL_REGEX, self::FILTERED_STR, $value);
+            $message = preg_replace(self::EMAIL_REGEX, self::FILTERED_STR, $message);
         }
 
         if ($this->creditCard) {
-            $value = preg_replace(self::CREDIT_CARD_REGEX, self::FILTERED_STR, $value);
-            $value = preg_replace(self::CREDIT_CARD_REGEX_DELIMITERS, self::FILTERED_STR, $value);
+            $message = preg_replace(self::CREDIT_CARD_REGEX, self::FILTERED_STR, $message);
+            $message = preg_replace(self::CREDIT_CARD_REGEX_DELIMITERS, self::FILTERED_STR, $message);
         }
 
         if ($this->phone) {
-            $value = preg_replace(self::E164_PHONE_REGEX, self::FILTERED_STR, $value);
-            $value = preg_replace(self::PHONE_REGEX, self::FILTERED_STR, $value);
+            $message = preg_replace(self::E164_PHONE_REGEX, self::FILTERED_STR, $message);
+            $message = preg_replace(self::PHONE_REGEX, self::FILTERED_STR, $message);
         }
 
         if ($this->ssn) {
-            $value = preg_replace(self::SSN_REGEX, self::FILTERED_STR, $value);
+            $message = preg_replace(self::SSN_REGEX, self::FILTERED_STR, $message);
         }
 
         if ($this->ip) {
-            $value = preg_replace(self::IP_REGEX, self::FILTERED_STR, $value);
+            $message = preg_replace(self::IP_REGEX, self::FILTERED_STR, $message);
         }
 
         if ($this->mac) {
-            $value = preg_replace(self::MAC_REGEX, self::FILTERED_STR, $value);
+            $message = preg_replace(self::MAC_REGEX, self::FILTERED_STR, $message);
         }
 
-        return $value;
+        return $message;
     }
 }
