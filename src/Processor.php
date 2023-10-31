@@ -19,25 +19,24 @@ class Processor implements ProcessorInterface
     private const URL_PASSWORD_REGEX = '/((?:\/\/|%2F%2F)\S+(?::|%3A))\S+(@|%40)/';
     private const MAC_REGEX = '/\b[0-9a-f]{2}(?:(?::|%3A)[0-9a-f]{2}){5}\b/i';
 
-    // TODO make private in 0.2.0
-    public $ip;
-    public $mac;
-    public $urlPassword;
-    public $email;
-    public $creditCard;
-    public $phone;
-    public $ssn;
+    private bool $ip;
+    private bool $mac;
+    private bool $urlPassword;
+    private bool $email;
+    private bool $creditCard;
+    private bool $phone;
+    private bool $ssn;
     private int $maxDepth;
 
     public function __construct(
-        $ip = false,
-        $mac = false,
-        $urlPassword = true,
-        $email = true,
-        $creditCard = true,
-        $phone = true,
-        $ssn = true,
-        int $maxDepth = 50
+        bool $ip = false,
+        bool $mac = false,
+        bool $urlPassword = true,
+        bool $email = true,
+        bool $creditCard = true,
+        bool $phone = true,
+        bool $ssn = true,
+        int  $maxDepth = 50
     ) {
         $this->ip = $ip;
         $this->mac = $mac;
