@@ -104,6 +104,40 @@ final class ProcessorTest extends TestCase
         $this->assertStringNotContainsString('test@example.org', $contents);
     }
 
+    public function testNestedContext()
+    {
+        $stream = fopen('php://memory', 'r+');
+        $logger = $this->createLogger($stream);
+        $logger->pushProcessor(new Logstop\Processor());
+
+        $logger->info('Hi', ['params' => ['user' => ['email' => 'test@example.org']]]);
+        $contents = $this->readStream($stream);
+        $this->assertStringContainsString('{"email":"[FILTERED]"}', $contents);
+        $this->assertStringNotContainsString('test@example.org', $contents);
+    }
+
+    public function testNestedContextMaxDepth()
+    {
+        $stream = fopen('php://memory', 'r+');
+        $logger = $this->createLogger($stream);
+        $logger->pushProcessor(new Logstop\Processor(maxDepth: 2));
+
+        $logger->info('Hi', ['params' => ['user' => ['email' => 'test@example.org']]]);
+        $contents = $this->readStream($stream);
+        $this->assertStringContainsString('[logstop] Max depth exceeded', $contents);
+        $this->assertStringContainsString('user', $contents);
+        $this->assertStringNotContainsString('email', $contents);
+        $this->assertStringNotContainsString('test@example.org', $contents);
+    }
+
+    public function testNestedContextMaxDepthZero()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('maxDepth must be greater than 0');
+
+        new Logstop\Processor(maxDepth: 0);
+    }
+
     public function testPsrLogMessageProcessorBefore()
     {
         $stream = fopen('php://memory', 'r+');

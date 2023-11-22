@@ -27,8 +27,9 @@ class Processor implements ProcessorInterface
     public $creditCard;
     public $phone;
     public $ssn;
+    public $maxDepth;
 
-    public function __construct($ip = false, $mac = false, $urlPassword = true, $email = true, $creditCard = true, $phone = true, $ssn = true)
+    public function __construct($ip = false, $mac = false, $urlPassword = true, $email = true, $creditCard = true, $phone = true, $ssn = true, $maxDepth = 20)
     {
         $this->ip = $ip;
         $this->mac = $mac;
@@ -37,17 +38,17 @@ class Processor implements ProcessorInterface
         $this->creditCard = $creditCard;
         $this->phone = $phone;
         $this->ssn = $ssn;
+
+        if ($maxDepth <= 0) {
+            throw new \InvalidArgumentException('maxDepth must be greater than 0');
+        }
+        $this->maxDepth = $maxDepth;
     }
 
     public function __invoke($record)
     {
         $message = $this->scrub($record->message);
-
-        $context = $record->context;
-        foreach ($context as $key => $value) {
-            $context[$key] = $this->scrub($value);
-        }
-
+        $context = $this->scrubContext($record->context);
         return $record->with(message: $message, context: $context);
     }
 
@@ -85,5 +86,22 @@ class Processor implements ProcessorInterface
         }
 
         return $message;
+    }
+
+    private function scrubContext($context, $depth = 1)
+    {
+        if ($depth > $this->maxDepth) {
+            return '[logstop] Max depth exceeded';
+        }
+
+        foreach ($context as $key => $value) {
+            if (is_array($value)) {
+                $context[$key] = $this->scrubContext($value, $depth + 1);
+            } else {
+                $context[$key] = $this->scrub($value);
+            }
+        }
+
+        return $context;
     }
 }
