@@ -29,7 +29,7 @@ class Processor implements ProcessorInterface
     public $ssn;
     public $maxDepth;
 
-    public function __construct($ip = false, $mac = false, $urlPassword = true, $email = true, $creditCard = true, $phone = true, $ssn = true, $maxDepth = 20)
+    public function __construct($ip = false, $mac = false, $urlPassword = true, $email = true, $creditCard = true, $phone = true, $ssn = true, $maxDepth = 10)
     {
         $this->ip = $ip;
         $this->mac = $mac;
