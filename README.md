@@ -24,7 +24,7 @@ $logger->info('Hi', ['email' => 'test@example.org']);
 
 Works even when sensitive data is URL-encoded with plus encoding
 
-[![Build Status](https://github.com/ankane/logstop-php/workflows/build/badge.svg?branch=master)](https://github.com/ankane/logstop-php/actions)
+[![Build Status](https://github.com/ankane/logstop-php/actions/workflows/build.yml/badge.svg)](https://github.com/ankane/logstop-php/actions)
 
 ## Installation
 
