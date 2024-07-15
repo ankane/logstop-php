@@ -181,9 +181,9 @@ final class ProcessorTest extends TestCase
         $this->assertEquals("begin $expected end", urldecode($this->readStream($stream)));
     }
 
-    private function assertNotFiltered($message, $expected = '[FILTERED]', ...$args)
+    private function assertNotFiltered($message, ...$args)
     {
-        $this->assertFiltered($message, ...$args, expected: $message);
+        $this->assertFiltered($message, $message, ...$args);
     }
 
     private function createLogger($stream, $formatter = null)
