@@ -1,7 +1,8 @@
-## 0.1.3 (unreleased)
+## 0.2.0 (unreleased)
 
 - Added `maxDepth` and `maxCount` options
 - Fixed error with nested context
+- Dropped support for PHP < 8.1
 
 ## 0.1.2 (2023-02-11)
 
