@@ -66,7 +66,7 @@ new Logstop\Processor(
 );
 ```
 
-Change context limits with:
+To change context limits, use:
 
 ```php
 new Logstop\Processor(
