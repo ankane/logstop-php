@@ -70,8 +70,8 @@ To change context limits, use:
 
 ```php
 new Logstop\Processor(
-    maxDepth: 15,
-    maxCount: 150
+    maxCount: 150,
+    maxDepth: 15
 );
 ```
 
