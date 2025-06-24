@@ -1,4 +1,4 @@
-## 0.2.0 (unreleased)
+## 0.2.0 (2025-06-24)
 
 - Added `maxDepth` and `maxCount` options
 - Fixed error with nested context
