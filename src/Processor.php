@@ -19,7 +19,7 @@ class Processor implements ProcessorInterface
     private const URL_PASSWORD_REGEX = '/((?:\/\/|%2F%2F)\S+(?::|%3A))\S+(@|%40)/';
     private const MAC_REGEX = '/\b[0-9a-f]{2}(?:(?::|%3A)[0-9a-f]{2}){5}\b/i';
 
-    // TODO make private in 0.2.0
+    // TODO make private in 0.3.0
     public $ip;
     public $mac;
     public $urlPassword;
