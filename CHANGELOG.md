@@ -1,6 +1,6 @@
 ## 0.1.3 (unreleased)
 
-- Added `maxDepth` option
+- Added `maxDepth` and `maxCount` options
 - Fixed error with nested context
 
 ## 0.1.2 (2023-02-11)

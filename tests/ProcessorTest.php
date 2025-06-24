@@ -138,6 +138,32 @@ final class ProcessorTest extends TestCase
         new Logstop\Processor(maxDepth: 0);
     }
 
+    public function testMaxCount()
+    {
+        $stream = fopen('php://memory', 'r+');
+        $logger = $this->createLogger($stream);
+        $logger->pushProcessor(new Logstop\Processor(maxCount: 2));
+
+        $logger->info('Hi', ['k1' => ['k2' => ['k3' => 'v3']], 'k4' => 'v4', 'k5' => 'v5']);
+        $contents = $this->readStream($stream);
+        $this->assertStringContainsString('[logstop] Max count exceeded', $contents);
+        $this->assertStringContainsString('k2', $contents);
+        $this->assertStringNotContainsString('k3', $contents);
+        $this->assertStringNotContainsString('v3', $contents);
+        $this->assertStringNotContainsString('k4', $contents);
+        $this->assertStringNotContainsString('v4', $contents);
+        $this->assertStringNotContainsString('k5', $contents);
+        $this->assertStringNotContainsString('v5', $contents);
+    }
+
+    public function testMaxCountZero()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('maxCount must be greater than 0');
+
+        new Logstop\Processor(maxCount: 0);
+    }
+
     public function testPsrLogMessageProcessorBefore()
     {
         $stream = fopen('php://memory', 'r+');
