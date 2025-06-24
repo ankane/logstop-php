@@ -66,6 +66,15 @@ new Logstop\Processor(
 );
 ```
 
+Change context limits with:
+
+```php
+new Logstop\Processor(
+    maxDepth: 10,
+    maxCount: 100
+);
+```
+
 ## Notes
 
 - To scrub existing log files, check out [scrubadub](https://github.com/datascopeanalytics/scrubadub)
